@@ -302,7 +302,7 @@
         <h3>Slop-Proof<br>Hiring</h3>
         <p>The complete system for making the right hire through the noise AI has added to the pipeline. Eight steps, from writing the role brief to closing the offer.</p>
         <div class="spec">39-page manual &middot; 8 editable templates &middot; 6 optional AI prompts</div>
-        <a class="btn" href="https://provenancehiring.gumroad.com/l/Provenance">Get the manual</a>
+        <a class="btn" href="https://provenancehiring.gumroad.com/l/Provenance" target="_blank" rel="noopener">Get the manual</a>
         <div class="upnext">&#8470; 02 in progress &middot; <a href="#contact" style="color:inherit">tell us what it should cover</a></div>
       </div>
       <svg class="fig" viewBox="0 0 300 300" aria-label="Registration target">
@@ -359,7 +359,7 @@
           <textarea id="f-msg" name="message" required placeholder="The role, where it is getting stuck, anything useful."></textarea>
         </div>
         <div>
-          <button class="btn" type="submit" style="margin-top:0">Send it</button>
+          <button class="btn" id="fbtn" type="submit" style="margin-top:0">Send it</button>
           <div class="fstat" id="fstat" role="status"></div>
         </div>
         <p class="note">No list, no sequence, no sharing your details with anyone.</p>
@@ -382,33 +382,50 @@
   /* The form posts to Formspree once an endpoint is set. Until then it degrades to the
      visitor's own mail client rather than silently failing — no dead end either way. */
   (function () {
-    var f = document.getElementById("cform"), stat = document.getElementById("fstat");
-    var live = f.getAttribute("action").indexOf("http") === 0;
+    var f = document.getElementById("cform"),
+        stat = document.getElementById("fstat"),
+        btn = document.getElementById("fbtn"),
+        live = f.getAttribute("action").indexOf("http") === 0,
+        FALLBACK = "That didn't send. Email hello@provenancehiring.com instead.";
+
+    function say(msg, ok) { stat.textContent = msg; stat.style.color = ok ? "var(--cyan)" : "var(--red)"; }
 
     f.addEventListener("submit", function (e) {
+      e.preventDefault();
       var d = new FormData(f);
+
+      /* No endpoint configured: hand off to the visitor's own mail client rather than
+         failing silently. Never a dead end. */
       if (!live) {
-        e.preventDefault();
-        var body = "Name: " + (d.get("name") || "") +
-                   "\nCompany: " + (d.get("company") || "") +
-                   "\nAbout: " + (d.get("topic") || "") +
-                   "\n\n" + (d.get("message") || "");
         window.location.href = "mailto:hello@provenancehiring.com?subject=" +
           encodeURIComponent("Provenance enquiry — " + (d.get("topic") || "")) +
-          "&body=" + encodeURIComponent(body);
-        stat.textContent = "Opening your email app…";
+          "&body=" + encodeURIComponent(
+            "Name: " + (d.get("name") || "") +
+            "\nCompany: " + (d.get("company") || "") +
+            "\nAbout: " + (d.get("topic") || "") +
+            "\n\n" + (d.get("message") || ""));
+        say("Opening your email app…", true);
         return;
       }
-      e.preventDefault();
-      stat.textContent = "Sending…";
+
+      btn.disabled = true; btn.style.opacity = "0.5";
+      say("Sending…", true);
+
       fetch(f.action, { method: "POST", body: d, headers: { Accept: "application/json" } })
         .then(function (r) {
-          if (r.ok) { f.reset(); stat.textContent = "Sent. We'll reply from hello@provenancehiring.com."; }
-          else { stat.textContent = "That didn't send — email hello@provenancehiring.com instead."; }
+          return r.json().catch(function () { return {}; }).then(function (j) {
+            if (r.ok) {
+              f.reset();
+              say("Sent. We'll reply from hello@provenancehiring.com.", true);
+            } else if (j.errors && j.errors.length) {
+              say(j.errors.map(function (x) { return x.message; }).join(" · "), false);
+            } else {
+              say(FALLBACK, false);
+            }
+          });
         })
-        .catch(function () {
-          stat.textContent = "That didn't send — email hello@provenancehiring.com instead.";
-        });
+        .catch(function () { say(FALLBACK, false); })
+        .then(function () { btn.disabled = false; btn.style.opacity = ""; });
     });
   })();
 </script>

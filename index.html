@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Provenance · Hire on evidence</title>
+<meta name="description" content="Provenance publishes field manuals for people who own hiring decisions. Hire on evidence.">
+
+<!-- WEB FONT SUBSTITUTION — read this before "fixing" the fonts.
+     The print system is Bahnschrift / Constantia / Consolas / Bodoni MT. Those are
+     WINDOWS-ONLY, which is fine for the PDF (rendered once, on Loren's machine) and fatal
+     on a website (rendered on the visitor's machine, and most of them are not on Windows).
+     So the web has a deliberate parallel set, chosen to match rather than to be trendy:
+       Bahnschrift  -> Archivo      (variable width axis, the only close free match)
+       Constantia   -> Source Serif 4
+       Consolas     -> IBM Plex Mono
+       Bodoni MT    -> Bodoni Moda  (NON-NEGOTIABLE: the mark is a didone. BRAND.md is
+                                     explicit that rendering the P in anything else makes
+                                     it a different mark, not this one.)
+     Hardening step for later: self-host the woff2 files so the page has no third-party
+     dependency and no requests leaking to Google. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700&family=Bodoni+Moda:opsz,wght@6..96,900&family=IBM+Plex+Mono:wght@400;500&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+
+<style>
+  :root {
+    --ink:#1C1C1A; --paper:#EFEBE2; --red:#D2342F; --cyan:#0093AD;
+    --muted:#7A7468; --body:#4A463E; --rule:#B8B2A4;
+    --cond:'Archivo', 'Arial Narrow', Arial, sans-serif;
+    --serif:'Source Serif 4', Constantia, Georgia, serif;
+    --mono:'IBM Plex Mono', Consolas, monospace;
+  }
+  /* Deliberately light-only. The brand is a printed sheet on newsprint stock; a dark mode
+     would be a different object, not a theme of this one. */
+  * { margin:0; padding:0; box-sizing:border-box; }
+  html { -webkit-text-size-adjust:100%; }
+  body { background:var(--paper); color:var(--ink); font-family:var(--serif);
+         font-size:18px; line-height:1.6; }
+  .sheet { max-width:1080px; margin:0 auto; padding:34px 24px 60px; position:relative; }
+
+  /* crop marks: the one piece of furniture that survives every size, because it is what
+     makes the page read as a printed sheet rather than a web layout */
+  .crop { position:absolute; width:26px; height:26px; pointer-events:none; }
+  .crop.tl { top:10px; left:10px; border-top:2px solid var(--rule); border-left:2px solid var(--rule); }
+  .crop.tr { top:10px; right:10px; border-top:2px solid var(--rule); border-right:2px solid var(--rule); }
+
+  /* masthead lockup: mark + wordmark as one colophon. Same rule as the cover card — the P
+     is the imprint and never changes; product figures change. Don't grow the P. */
+  header { display:flex; justify-content:space-between; align-items:flex-end;
+           border-bottom:4px solid var(--ink); padding-bottom:12px; gap:16px; flex-wrap:wrap; }
+  .lockup { display:flex; align-items:flex-end; gap:14px; }
+  .wordmark { font-family:var(--cond); font-weight:700; font-stretch:88%; font-size:24px;
+              letter-spacing:0.32em; line-height:1; }
+  .ed { font-family:var(--mono); font-size:13px; letter-spacing:0.08em; color:var(--muted); }
+
+  /* the mark: cyan claim lifted off the red truth underneath */
+  .pmark { position:relative; display:inline-block; line-height:0.74; font-size:40px;
+           isolation:isolate; flex-shrink:0; margin-bottom:5px; }
+  .pmark b, .pmark i { font-family:'Bodoni Moda', Didot, serif; font-weight:900;
+                       font-style:normal; display:block; }
+  .pmark b { color:var(--red); }
+  .pmark i { position:absolute; left:-0.075em; top:-0.062em; color:var(--cyan);
+             mix-blend-mode:multiply; }
+
+  h1 { font-family:var(--cond); font-weight:700; font-stretch:76%; font-size:clamp(44px,8.5vw,88px);
+       line-height:0.94; text-transform:uppercase; margin:56px 0 0; letter-spacing:-0.005em; }
+  .brandline { font-family:var(--mono); font-size:13px; letter-spacing:0.16em;
+               text-transform:uppercase; color:var(--red); margin-top:18px; }
+  .lede { font-size:clamp(19px,2.4vw,23px); line-height:1.5; max-width:41ch; margin-top:26px; color:var(--body); }
+
+  section { margin-top:64px; }
+  h2 { font-family:var(--mono); font-size:13px; letter-spacing:0.16em; text-transform:uppercase;
+       color:var(--muted); border-bottom:1px solid var(--rule); padding-bottom:9px; margin-bottom:26px; }
+  p { max-width:62ch; margin-bottom:16px; color:var(--body); }
+  p strong { color:var(--ink); font-weight:600; }
+
+  .offers { display:grid; grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); gap:30px; }
+  .offer h3 { font-family:var(--cond); font-weight:700; font-stretch:82%; font-size:26px;
+              text-transform:uppercase; margin-bottom:9px; }
+  .offer p { font-size:17px; margin-bottom:0; }
+  .tag { font-family:var(--mono); font-size:12px; letter-spacing:0.1em; text-transform:uppercase;
+         color:var(--red); display:block; margin-bottom:6px; }
+
+  /* № 01 card: product figure on the right, exactly the relationship the cover card uses */
+  .manual { display:flex; gap:38px; align-items:center; flex-wrap:wrap;
+            border:2px solid var(--ink); padding:34px 34px 36px; }
+  .manual-body { flex:1 1 340px; }
+  .manual h3 { font-family:var(--cond); font-weight:700; font-stretch:76%;
+               font-size:clamp(34px,5vw,52px); line-height:0.95; text-transform:uppercase; }
+  .manual p { font-size:17px; margin-top:14px; }
+  .spec { font-family:var(--mono); font-size:12.5px; letter-spacing:0.06em; color:var(--muted);
+          text-transform:uppercase; margin-top:18px; }
+  .fig { width:190px; height:190px; flex-shrink:0; isolation:isolate; display:block; }
+  .fig .r { fill:none; stroke:var(--red); }
+  .fig .c { fill:none; stroke:var(--cyan); mix-blend-mode:multiply; }
+  .fig .rf { fill:var(--red); }
+  .fig .cf { fill:var(--cyan); mix-blend-mode:multiply; }
+
+  .btn { display:inline-block; margin-top:22px; background:var(--ink); color:var(--paper);
+         font-family:var(--mono); font-size:14px; letter-spacing:0.09em; text-transform:uppercase;
+         padding:14px 24px; text-decoration:none; border:2px solid var(--ink); }
+  .btn:hover { background:var(--paper); color:var(--ink); }
+
+  a.mail { color:var(--ink); text-decoration:none; border-bottom:2px solid var(--red); }
+  a.mail:hover { color:var(--red); }
+  .contact-addr { font-family:var(--cond); font-weight:700; font-stretch:82%;
+                  font-size:clamp(24px,4vw,38px); text-transform:none; }
+
+  footer { margin-top:70px; border-top:2px solid var(--rule); padding-top:16px;
+           display:flex; justify-content:space-between; gap:14px; flex-wrap:wrap;
+           font-family:var(--mono); font-size:12.5px; color:var(--muted); letter-spacing:0.05em; }
+</style>
+</head>
+<body>
+<div class="sheet">
+  <div class="crop tl"></div><div class="crop tr"></div>
+
+  <header>
+    <span class="lockup">
+      <span class="pmark"><b>P</b><i>P</i></span>
+      <span class="wordmark">PROVENANCE</span>
+    </span>
+    <span class="ed">HIRING &middot; TALENT OPS</span>
+  </header>
+
+  <h1>Hiring<br>on evidence</h1>
+  <div class="brandline">Stop reading claims. Grade work.</div>
+  <p class="lede">Provenance publishes field manuals for the people who actually own a hiring decision.</p>
+
+  <section>
+    <h2>What this is</h2>
+    <p>Ten years of recruiting and talent operations, written down as systems you can run yourself.</p>
+    <p>Hiring broke in a specific way. A job post draws a flood of applications, most of them written by a machine, and there is no reliable way to tell which. Detection tools guess, and when they guess wrong they reject good people. <strong>So none of this asks you to detect AI.</strong> Every method here moves the decision off claims and onto work: an artifact you can look at, a short sample you can grade, follow-up questions that only someone who did the thing can answer.</p>
+    <p>It works whether you run a full applicant tracking system or a spreadsheet.</p>
+  </section>
+
+  <section>
+    <h2>Two ways to work with us</h2>
+    <div class="offers">
+      <div class="offer">
+        <span class="tag">Run it yourself</span>
+        <h3>The manuals</h3>
+        <p>Buy once, own it, run it on your own schedule. Complete systems with the templates already built. Nothing to subscribe to.</p>
+      </div>
+      <div class="offer">
+        <span class="tag">Have it built &middot; 48 hours</span>
+        <h3>Done for you</h3>
+        <p>Short intake form, no calls and no meetings. We build the whole kit for one specific role: role brief, job posting, work sample with a grading rubric, interview guide, debrief sheet. Fixed scope, fixed price, delivered in two days.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Field Manual &#8470; 01</h2>
+    <div class="manual">
+      <div class="manual-body">
+        <h3>Slop-Proof<br>Hiring</h3>
+        <p>The complete system for making the best hire through all the noise that AI brings. Eight steps, from writing the role brief to closing the offer.</p>
+        <div class="spec">39-page manual &middot; 8 editable templates &middot; 6 optional AI prompts</div>
+        <!-- TODO: replace with the live Gumroad URL once the product is published -->
+        <a class="btn" href="#GUMROAD-URL-PENDING">Get the manual</a>
+      </div>
+      <svg class="fig" viewBox="0 0 300 300" aria-label="Registration target">
+        <circle class="r"  cx="159" cy="157" r="110" stroke-width="27"/>
+        <circle class="c"  cx="141" cy="143" r="110" stroke-width="27"/>
+        <circle class="r"  cx="154" cy="153" r="64" stroke-width="25"/>
+        <circle class="c"  cx="146" cy="147" r="64" stroke-width="25"/>
+        <circle class="rf" cx="150" cy="150" r="25"/>
+        <circle class="cf" cx="150" cy="150" r="25"/>
+      </svg>
+    </div>
+  </section>
+
+  <section>
+    <h2>Get in touch</h2>
+    <p>Questions about applying any of this to the role you are actually hiring for, or about the done-for-you kit. Real answers, not a sales sequence.</p>
+    <p class="contact-addr"><a class="mail" href="mailto:hello@provenancehiring.com">hello@provenancehiring.com</a></p>
+  </section>
+
+  <footer>
+    <span>PROVENANCE &middot; HIRING ON EVIDENCE</span>
+    <span>PROVENANCEHIRING.COM</span>
+    <span>&copy; 2026</span>
+  </footer>
+</div>
+</body>
+</html>

@@ -59,8 +59,11 @@
   .wordmark { font-family:var(--cond); font-weight:700; font-stretch:88%;
               font-size:clamp(26px,4.4vw,54px); letter-spacing:0.26em; line-height:1; }
   /* imprint motto — sits under the wordmark as a colophon line, not as a page strapline */
+  /* optical nudge: Archivo's P carries a bigger left sidebearing than IBM Plex Mono's E,
+     so flush-left in the box reads as the motto hanging left. Push it back by the gap. */
   .motto { font-family:var(--mono); font-size:clamp(10.5px,1.1vw,13px); letter-spacing:0.19em;
-           text-transform:uppercase; color:var(--red); margin-top:clamp(7px,1vw,11px); }
+           text-transform:uppercase; color:var(--red); margin-top:clamp(7px,1vw,11px);
+           margin-left:clamp(1px,0.28vw,4px); }
   nav { display:flex; gap:clamp(16px,2.4vw,30px); font-family:var(--mono); font-size:13px;
         letter-spacing:0.11em; text-transform:uppercase; padding-bottom:6px; flex-wrap:wrap; }
   nav a { color:var(--muted); text-decoration:none; padding-bottom:3px; border-bottom:2px solid transparent; }
@@ -74,7 +77,9 @@
        font-size:clamp(46px,9.2vw,116px); line-height:0.90; text-transform:uppercase;
        letter-spacing:-0.012em; }
   h1 .off { position:relative; display:inline-block; isolation:isolate; }
-  h1 .off::after { content:attr(data-t); position:absolute; left:-0.014em; top:-0.028em;
+  /* Misregistration offset. Too small and it reads as double-vision rather than a second
+     plate, which is what made it feel like a blur. Sized off the P mark's own ratio. */
+  h1 .off::after { content:attr(data-t); position:absolute; left:-0.038em; top:-0.050em;
                    color:var(--cyan); mix-blend-mode:multiply; pointer-events:none; }
   .hero-side { border-left:2px solid var(--ink); padding-left:clamp(18px,2.6vw,30px); }
   .lede { font-size:clamp(19px,2.1vw,24px); line-height:1.44; color:var(--ink); }
@@ -242,7 +247,7 @@
         <p class="big">A claim is not evidence. We build hiring around the difference.</p>
       </div>
       <div>
-        <p>Résumés, cover letters, portfolios and answers are all claims. They always were. What changed is that producing a convincing claim now costs nothing, so the signal that used to separate candidates has mostly stopped working.</p>
+        <p>Résumés, cover letters, portfolios and interview answers are all claims. They always were. What changed is that producing a convincing claim now costs nothing, so the signal that used to separate candidates has mostly stopped working.</p>
         <p><strong>We do not try to detect AI.</strong> Detection guesses, and a wrong guess rejects a real person for writing well. That is a worse failure than the one it prevents.</p>
         <p>Instead every system we build moves the decision onto something you can look at directly: an artifact, a short sample of the actual work, questions only someone who did the thing can answer. That principle is the through-line in everything we make, whatever the role or the format.</p>
       </div>

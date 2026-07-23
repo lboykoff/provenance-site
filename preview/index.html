@@ -3,7 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Provenance · Hiring on evidence</title>
+<title>Provenance · divider studies</title>
+<meta name="robots" content="noindex,nofollow">
 <meta name="description" content="Provenance is a hiring and talent operations practice. We build hiring systems that decide on evidence instead of claims, and publish them as field manuals.">
 
 <!-- WEB FONT SUBSTITUTION — read this before "fixing" the fonts.
@@ -215,6 +216,61 @@
     .row2 { grid-template-columns:1fr; }
     .wordmark { letter-spacing:0.16em; }
   }
+
+  /* ══════════════════════════════════════════════════════════════════════════
+     DIVIDER STUDIES — preview only. Everything below is scoped to a body class
+     so the shipped stylesheet above is untouched and can be diffed cleanly.
+     ══════════════════════════════════════════════════════════════════════════ */
+
+  #switch { position:fixed; z-index:99; left:50%; transform:translateX(-50%); bottom:18px;
+            display:flex; gap:0; background:var(--paper); border:2px solid var(--ink);
+            box-shadow:5px 5px 0 var(--cyan); }
+  #switch button { font-family:var(--mono); font-size:12px; letter-spacing:0.09em;
+            text-transform:uppercase; padding:11px 15px; background:transparent; color:var(--ink);
+            border:none; border-right:1px solid var(--rule); cursor:pointer; }
+  #switch button:last-child { border-right:none; }
+  #switch button[aria-pressed="true"] { background:var(--ink); color:var(--paper); }
+  .caption { position:fixed; z-index:99; left:50%; transform:translateX(-50%); bottom:64px;
+             font-family:var(--mono); font-size:11.5px; letter-spacing:0.06em; color:var(--muted);
+             background:var(--paper); padding:5px 12px; border:1px solid var(--rule);
+             white-space:nowrap; max-width:92vw; overflow:hidden; text-overflow:ellipsis; }
+
+  /* ── A · THE SPINE ────────────────────────────────────────────────────────
+     Section top-rules come out entirely. One continuous vertical hairline runs
+     down the content and the numerals sit ON it, like mile markers. The page
+     stops reading as stacked slices and becomes one column you travel down. */
+  body.v-a main, body.v-ab main { position:relative; }
+  body.v-a main::before, body.v-ab main::before {
+      content:""; position:absolute; top:0; bottom:0; left:calc(var(--gut) - 1px);
+      width:2px; background:var(--rule); }
+  body.v-a section, body.v-ab section { border-top:none; padding-left:clamp(38px,5.2vw,74px);
+      position:relative; }
+  body.v-a .hero, body.v-ab .hero { padding-left:clamp(38px,5.2vw,74px); }
+  body.v-a .shead, body.v-ab .shead { position:relative; }
+  body.v-a .snum, body.v-ab .snum {
+      position:absolute; left:calc(-1 * clamp(38px,5.2vw,74px)); top:50%;
+      transform:translate(-50%,-50%) translateX(1px);
+      background:var(--paper); padding:9px 0; font-size:clamp(26px,3.2vw,40px);
+      width:clamp(46px,6vw,74px); text-align:center; }
+  body.v-a .stitle, body.v-ab .stitle { margin-left:0; }
+
+  /* ── B · TINT BANDS ───────────────────────────────────────────────────────
+     Colour separates instead of line. Alternate sections sit on the newsprint
+     tint, full-bleed, and the rules come out. */
+  body.v-b section, body.v-ab section { border-top:none; }
+  body.v-b section:nth-of-type(even), body.v-ab section:nth-of-type(even) {
+      background:var(--tint); box-shadow:0 0 0 100vmax var(--tint);
+      clip-path:inset(0 -100vmax); }
+  body.v-b .manual, body.v-ab .manual { background:var(--paper); }
+  /* keep one hairline so adjacent untinted sections still part */
+  body.v-b section:nth-of-type(odd) + section:nth-of-type(odd) { border-top:1px solid var(--rule); }
+
+  /* A+B keeps the spine as the through-line and uses tint only to mark the
+     published-work section, so the band means something instead of alternating. */
+  body.v-ab section:nth-of-type(even) { background:none; box-shadow:none; clip-path:none; }
+  body.v-ab #manuals { background:var(--tint); box-shadow:0 0 0 100vmax var(--tint);
+      clip-path:inset(0 -100vmax); }
+  body.v-ab #manuals .manual { background:var(--paper); }
 </style>
 </head>
 <body>
@@ -387,6 +443,34 @@
     <span>&copy; 2026</span>
   </div>
 </footer>
+
+<div class="caption" id="cap"></div>
+<div id="switch">
+  <button data-v="" aria-pressed="true">Current</button>
+  <button data-v="v-a" aria-pressed="false">A · Spine</button>
+  <button data-v="v-b" aria-pressed="false">B · Bands</button>
+  <button data-v="v-ab" aria-pressed="false">A+B</button>
+</div>
+<script>
+  (function () {
+    var caps = {
+      "":     "CURRENT — nine full-width horizontal rules, all saying the same thing",
+      "v-a":  "A · SPINE — section rules removed, one vertical hairline, numerals sit on it",
+      "v-b":  "B · BANDS — colour separates instead of line, alternating newsprint tint",
+      "v-ab": "A+B — spine carries the structure, one tint band marks the published work"
+    };
+    var btns = document.querySelectorAll("#switch button"), cap = document.getElementById("cap");
+    function set(v) {
+      document.body.className = v;
+      cap.textContent = caps[v];
+      btns.forEach(function (b) { b.setAttribute("aria-pressed", String(b.dataset.v === v)); });
+      try { history.replaceState(null, "", v ? "?v=" + v : location.pathname); } catch (e) {}
+    }
+    btns.forEach(function (b) { b.addEventListener("click", function () { set(b.dataset.v); }); });
+    var start = new URLSearchParams(location.search).get("v") || "";
+    set(caps[start] !== undefined ? start : "");
+  })();
+</script>
 
 <script>
   /* The form posts to Formspree once an endpoint is set. Until then it degrades to the

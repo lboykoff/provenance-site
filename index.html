@@ -62,7 +62,7 @@
   .wm-stack { display:flex; flex-direction:column; align-items:flex-start;
               padding-bottom:clamp(4px,0.8vw,10px); }
   .wordmark { font-family:var(--cond); font-weight:700; font-stretch:88%;
-              font-size:clamp(26px,4.4vw,54px); letter-spacing:0.26em; line-height:1; }
+              font-size:clamp(19px,4.4vw,54px); letter-spacing:0.26em; line-height:1; }
   /* imprint motto — sits under the wordmark as a colophon line, not as a page strapline */
   /* optical nudge: Archivo's P carries a bigger left sidebearing than IBM Plex Mono's E,
      so flush-left in the box reads as the motto hanging left. Push it back by the gap. */
@@ -226,6 +226,11 @@
   @media (max-width:520px) {
     .row2 { grid-template-columns:1fr; }
     .wordmark { letter-spacing:0.16em; }
+  }
+  /* 320px: the lockup is the widest thing on the page and was pushing the body sideways. */
+  @media (max-width:400px) {
+    .wordmark { letter-spacing:0.09em; }
+    .pmark { font-size:clamp(62px,12vw,132px); }
   }
 </style>
 </head>

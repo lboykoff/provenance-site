@@ -79,7 +79,10 @@
      it is em-based so it scales with the clamped font size. */
   h1 { font-family:var(--cond); font-weight:700; font-stretch:76%;
        font-size:clamp(46px,9.2vw,116px); line-height:0.90; text-transform:uppercase;
-       letter-spacing:-0.012em; margin-bottom:-0.67em; }
+       letter-spacing:-0.012em; }
+  /* Two-column layout only: stacked, the headline is followed by the hero-side rule and
+     the band reads as ordinary spacing, so pulling it up would crowd the rule. */
+  @media (min-width:861px) { h1 { margin-bottom:-0.67em; } }
   h1 .off { position:relative; display:inline-block; isolation:isolate; }
   /* Misregistration offset. Too small and it reads as double-vision rather than a second
      plate, which is what made it feel like a blur. Sized off the P mark's own ratio. */

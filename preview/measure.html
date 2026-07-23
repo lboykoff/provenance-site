@@ -8,7 +8,8 @@
   th { text-align:right; color:#888; }
   .bad { color:#ff6b6b; } .ok { color:#6bff9e; }
 </style>
-<iframe id="frame" src="/?sweep=1"></iframe>
+<iframe id="frame"></iframe>
+<script>document.getElementById('frame').src = '/?sweep=' + Date.now();</script>
 <div id="out">measuring…</div>
 <script>
 const WIDTHS = [320,360,375,414,480,540,600,680,768,820,860,861,900,960,1024,1100,1180,1240,1280,1366,1440,1512,1600,1728,1920,2200,2560,3200];

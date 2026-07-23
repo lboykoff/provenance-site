@@ -54,21 +54,17 @@
   .pmark b { color:var(--red); }
   .pmark i { position:absolute; left:-0.075em; top:-0.062em; color:var(--cyan);
              mix-blend-mode:multiply; }
-  .wordmark { font-family:var(--cond); font-weight:700; font-stretch:88%;
-              font-size:clamp(26px,4.4vw,54px); letter-spacing:0.26em; line-height:1;
+  .wm-stack { display:flex; flex-direction:column; align-items:flex-start;
               padding-bottom:clamp(4px,0.8vw,10px); }
+  .wordmark { font-family:var(--cond); font-weight:700; font-stretch:88%;
+              font-size:clamp(26px,4.4vw,54px); letter-spacing:0.26em; line-height:1; }
+  /* imprint motto — sits under the wordmark as a colophon line, not as a page strapline */
+  .motto { font-family:var(--mono); font-size:clamp(10.5px,1.1vw,13px); letter-spacing:0.19em;
+           text-transform:uppercase; color:var(--red); margin-top:clamp(7px,1vw,11px); }
   nav { display:flex; gap:clamp(16px,2.4vw,30px); font-family:var(--mono); font-size:13px;
         letter-spacing:0.11em; text-transform:uppercase; padding-bottom:6px; flex-wrap:wrap; }
   nav a { color:var(--muted); text-decoration:none; padding-bottom:3px; border-bottom:2px solid transparent; }
   nav a:hover { color:var(--ink); border-bottom-color:var(--red); }
-
-  /* strapline bar directly under the rule — the newspaper "standing head" slot.
-     Replaces the old "HIRING · TALENT OPS", which said nothing. */
-  .strap { display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap;
-           font-family:var(--mono); font-size:12.5px; letter-spacing:0.1em;
-           text-transform:uppercase; color:var(--muted);
-           border-bottom:1px solid var(--rule); padding:11px 0; }
-  .strap b { color:var(--red); font-weight:500; }
 
   /* ── HERO ─────────────────────────────────────────────────────────────── */
   .hero { padding:clamp(52px,8vw,104px) 0 clamp(44px,6vw,76px);
@@ -210,7 +206,10 @@
     <div class="mast-row">
       <a href="#top" class="lockup" style="text-decoration:none;color:inherit">
         <span class="pmark"><b>P</b><i>P</i></span>
-        <span class="wordmark">PROVENANCE</span>
+        <span class="wm-stack">
+          <span class="wordmark">PROVENANCE</span>
+          <span class="motto">Evidence over claims</span>
+        </span>
       </a>
       <nav>
         <a href="#approach">Approach</a>
@@ -221,13 +220,6 @@
     </div>
   </div>
 </header>
-
-<div class="wrap">
-  <div class="strap">
-    <span>Hiring &amp; talent operations &middot; Systems built to order, systems published</span>
-    <span><b>Evidence over claims</b></span>
-  </div>
-</div>
 
 <main class="wrap" id="top">
 

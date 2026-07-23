@@ -228,9 +228,14 @@
     .wordmark { letter-spacing:0.16em; }
   }
   /* 320px: the lockup is the widest thing on the page and was pushing the body sideways. */
+  /* Stacked, the rule below the headline is the hero-side's top border, and the grid gap
+     was leaving 34px under the caps against 55px above them. */
+  @media (max-width:860px) { .hero { gap:52px; } }
+  /* Below 375px the headline broke to three lines ("HIRING / ON / EVIDENCE"). */
   @media (max-width:400px) {
     .wordmark { letter-spacing:0.09em; }
     .pmark { font-size:clamp(62px,12vw,132px); }
+    h1 { font-size:clamp(34px,9.6vw,116px); }
   }
 </style>
 </head>

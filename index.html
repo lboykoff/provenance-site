@@ -80,7 +80,7 @@
      headline's vertical position was decided by how the lede happened to wrap. Both gaps
      swung ~45px across the range and inverted below 1240px. Top-aligned, the gap above is
      padding-top and the gap below is padding-bottom, at every width. */
-  .hero { padding:clamp(52px,8vw,104px) 0 clamp(56px,8.6vw,112px);
+  .hero { padding:clamp(52px,8vw,104px) 0 clamp(48px,7.1vw,92px);
           display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
           gap:clamp(28px,5vw,72px); align-items:start; }
   /* The headline is all caps, so the line box carries an empty descender band under the
@@ -92,10 +92,12 @@
   h1 { font-family:var(--cond); font-weight:700; font-stretch:76%;
        font-size:clamp(46px,8vw,116px); line-height:0.90; text-transform:uppercase;
        letter-spacing:-0.012em; }
-  /* Cancels the empty descender band under the last all-caps line so the headline box
-     equals its ink box. Two-column layout only; stacked, the band is ordinary spacing
-     between the headline and the rule that follows it. */
-  @media (min-width:861px) { h1 { margin-bottom:-1em; } }
+  /* Cancels the empty band between the last baseline and the box bottom. With
+     line-height 0.90 the half-leading is negative, so that band is only ~0.1em, not the
+     ~1em a normal line-height would leave. Measured, not assumed: the headline renders on
+     three lines at every desktop width, and calibrating for two put the section rule 100px
+     too high. Two-column layout only. */
+  @media (min-width:861px) { h1 { margin-bottom:-0.1em; } }
   h1 .off { position:relative; display:inline-block; isolation:isolate; }
   /* Misregistration offset. Too small and it reads as double-vision rather than a second
      plate, which is what made it feel like a blur. Sized off the P mark's own ratio. */

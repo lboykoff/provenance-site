@@ -1,0 +1,66 @@
+<meta name="robots" content="noindex,nofollow">
+<title>hero spacing sweep</title>
+<style>
+  body { font:13px/1.5 ui-monospace,Consolas,monospace; margin:16px; background:#111; color:#eee; }
+  #frame { position:fixed; left:-9999px; top:0; height:1400px; border:0; }
+  table { border-collapse:collapse; margin-top:10px; }
+  td,th { padding:3px 10px; border-bottom:1px solid #333; text-align:right; }
+  th { text-align:right; color:#888; }
+  .bad { color:#ff6b6b; } .ok { color:#6bff9e; }
+</style>
+<iframe id="frame" src="/?sweep=1"></iframe>
+<div id="out">measuring…</div>
+<script>
+const WIDTHS = [320,360,375,414,480,540,600,680,768,820,860,861,900,960,1024,1100,1180,1240,1280,1366,1440,1512,1600,1728,1920,2200,2560,3200];
+
+function measure(doc, win) {
+  const h1 = doc.querySelector('h1');
+  const cs = win.getComputedStyle(h1);
+  const c = doc.createElement('canvas').getContext('2d');
+  c.font = `${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`;
+  const m = c.measureText('HIRING');
+  const lh = parseFloat(cs.lineHeight);
+  const halfLead = (lh - (m.fontBoundingBoxAscent + m.fontBoundingBoxDescent)) / 2;
+  const capTopOff = halfLead + m.fontBoundingBoxAscent - m.actualBoundingBoxAscent;
+  const inkBotOff = halfLead + m.fontBoundingBoxAscent + lh;   // caps: baseline of line 2
+  const box  = h1.getBoundingClientRect();
+  const mast = doc.querySelector('.masthead').getBoundingClientRect();
+  const sec  = doc.querySelector('#approach').getBoundingClientRect();
+  const side = doc.querySelector('.hero-side').getBoundingClientRect();
+  const stacked = win.innerWidth < 861;
+  return {
+    font: Math.round(parseFloat(cs.fontSize)),
+    mb: Math.round(parseFloat(cs.marginBottom)),
+    above: Math.round((box.top + capTopOff) - mast.bottom),
+    below: Math.round(sec.top - (box.top + inkBotOff)),
+    sideH: Math.round(side.height),
+    h1OuterH: Math.round(box.height + parseFloat(cs.marginBottom)),
+    driver: (box.height + parseFloat(cs.marginBottom)) > side.height ? 'h1' : 'side',
+    stacked, overflow: doc.documentElement.scrollWidth > doc.documentElement.clientWidth
+  };
+}
+
+(async () => {
+  const f = document.getElementById('frame');
+  await new Promise(r => f.addEventListener('load', r, { once:true }));
+  await f.contentDocument.fonts.ready;
+  const rows = [];
+  for (const w of WIDTHS) {
+    f.style.width = w + 'px';
+    f.contentWindow.dispatchEvent(new Event('resize'));
+    await new Promise(r => requestAnimationFrame(() => requestAnimationFrame(r)));
+    rows.push({ w, ...measure(f.contentDocument, f.contentWindow) });
+  }
+  const desktop = rows.filter(r => !r.stacked);
+  const belows = desktop.map(r => r.below), aboves = desktop.map(r => r.above);
+  const spread = a => Math.max(...a) - Math.min(...a);
+  document.getElementById('out').innerHTML =
+    `<b>desktop (&ge;861px): above spread ${spread(aboves)}px, below spread ${spread(belows)}px</b>` +
+    `<table><tr><th>w<th>font<th>margin<th>ABOVE<th>BELOW<th>diff<th>sideH<th>h1H<th>driver<th>ovf</tr>` +
+    rows.map(r => {
+      const d = r.below - r.above;
+      const cls = r.stacked ? '' : (Math.abs(d) > 22 ? 'bad' : 'ok');
+      return `<tr class="${cls}"><td>${r.w}${r.stacked?'*':''}<td>${r.font}<td>${r.mb}<td>${r.above}<td>${r.below}<td>${d>0?'+':''}${d}<td>${r.sideH}<td>${r.h1OuterH}<td>${r.driver}<td>${r.overflow?'YES':''}</tr>`;
+    }).join('') + `</table><p>* = stacked (below 861px breakpoint)</p>`;
+})();
+</script>

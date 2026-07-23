@@ -73,9 +73,13 @@
   .hero { padding:clamp(52px,8vw,104px) 0 clamp(44px,6vw,76px);
           display:grid; grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);
           gap:clamp(28px,5vw,72px); align-items:end; }
+  /* The headline is all caps, so the line box carries an empty descender band under the
+     last line (~0.67em). Left alone it makes the gap below the headline read ~70% bigger
+     than the gap above it. The negative margin absorbs the band so the optical gaps match;
+     it is em-based so it scales with the clamped font size. */
   h1 { font-family:var(--cond); font-weight:700; font-stretch:76%;
        font-size:clamp(46px,9.2vw,116px); line-height:0.90; text-transform:uppercase;
-       letter-spacing:-0.012em; }
+       letter-spacing:-0.012em; margin-bottom:-0.67em; }
   h1 .off { position:relative; display:inline-block; isolation:isolate; }
   /* Misregistration offset. Too small and it reads as double-vision rather than a second
      plate, which is what made it feel like a blur. Sized off the P mark's own ratio. */
@@ -231,7 +235,7 @@
   <div class="hero">
     <h1><span class="off" data-t="Hiring">Hiring</span><br><span class="off" data-t="on evidence">on evidence</span></h1>
     <div class="hero-side">
-      <p class="lede"><b>Provenance builds hiring systems that decide on evidence, not claims.</b> Built to order for your role, or published as manuals you run yourself.</p>
+      <p class="lede"><b>Provenance builds hiring systems that decide on evidence, not claims.</b> We build it to order for your role, or you run it yourself from a field manual.</p>
       <p class="sub">Ten years inside recruiting, applicant tracking, screening and interview design. One standard applied to all of it.</p>
     </div>
   </div>
